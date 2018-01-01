@@ -1,4 +1,8 @@
-#include "CommInterface.h"
+#ifndef __COMMINTERFACE_H_INCLUDED__ 
+#define __COMMINTERFACE_H_INCLUDED__
+#include "../../include/CommInterface.h"
+#endif
+
 #include <iostream>
 #include <sstream>
 #include <thread>
@@ -38,10 +42,6 @@ int main(int argc, char const *argv[])
 	for (auto& kv : retPoll) {
 	    std::cout << kv.first << " has value " << kv.second << std::endl;
 	}
-
-	// Broadcast 2
-	// sprintf(buffer2, "%d", myVal*5);
-	// comm.BroadcastData(buffer2);
 
 	usleep(syncTime);
 	

@@ -19,9 +19,13 @@
 #include <stdio.h>
 #include <unistd.h>
 
+#define PATHSIZE 128
+
 int main(int argc, char const *argv[])
 {
 	int numNodes, myVal;
+
+    setbuf(stdout, NULL);
 
 	std::istringstream ss(argv[1]);
     if (!(ss >> numNodes)){
@@ -35,41 +39,25 @@ int main(int argc, char const *argv[])
     }
 
     GraphLoader g;
-    std::vector<int> neighbors = g.GetNeighbors(myVal, "input.txt");
+    
+    const char *dirPath = getenv("DistributedSystems");
+    printf("dirPath is %s\n", dirPath);
+    char inputPath[PATHSIZE];
+    memset(inputPath, '\0', sizeof(inputPath));
+    strcat(inputPath, dirPath);
+    strcat(inputPath, "demo/mst/input.txt");
+
+    std::vector<int> neighbors = g.GetNeighbors(myVal, inputPath);
     printf("neighbors of node %d are\n", myVal);
     for(auto &v: neighbors){
         printf("%d\t", v);
     }
     printf("\n");
-    
-    //int numNodes = 0;
-
-    // std::vector<int> neighbors;
-    
-    // if(myVal == 0){
-    //     neighbors.push_back(1);
-    //     neighbors.push_back(2);
-    //     //numNodes = 2;
-    // }
-    // else if(myVal == 1){
-    //     neighbors.push_back(0);
-    //     neighbors.push_back(2);
-    //     neighbors.push_back(3);
-    //     //numNodes = 3;
-    // }
-    // else if(myVal == 2){
-    //     neighbors.push_back(0);
-    //     neighbors.push_back(1);
-    //     neighbors.push_back(3);
-    //     //numNodes = 3;    
-    // }
-    // else if(myVal == 3){
-    //     neighbors.push_back(1);
-    //     neighbors.push_back(2);
-    //     //numNodes = 2;
-    // }
 
     CommInterface comm(numNodes, myVal, neighbors);
+    comm.CreateLogger("mst");
+
+    printf("Logging path is %s\n", comm.logName);
 
     MST mst(neighbors.size(), myVal, &comm);
 

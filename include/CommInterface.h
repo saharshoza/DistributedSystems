@@ -16,6 +16,7 @@ class CommInterface
 public:
 	Server* s;
 	Client* c;
+	char logName[256];
 	std::ofstream loggerFile;
 	std::map<int, std::queue<int>> delayMap;
 	std::vector<int> neighbors;
@@ -34,6 +35,7 @@ public:
 	void BroadcastData(char* data);
 	void Logger(int nodeNum, char* data);
 	std::map<int, char*> PollData();
+	void CreateLogger(const char* testBin);
 	~CommInterface(){};
 	
 };

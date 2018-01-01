@@ -1,4 +1,7 @@
-#include "GraphLoader.h"
+#ifndef __GRAPHLOADER_H_INCLUDED__ 
+#define __GRAPHLOADER_H_INCLUDED__
+#include "../include/GraphLoader.h"
+#endif
 
 int main(int argc, char const *argv[])
 {

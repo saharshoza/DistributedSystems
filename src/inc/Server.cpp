@@ -104,8 +104,8 @@ int Server::SetConnections(){
 		}
 
 		printf("Server::Accepted connection from node %d at time %lu\n", nodeNum, std::time(0));
-		printf("Server::numConnections %d out of numNodes %d done at time %lu\n", numConnections, numNodes, std::time(0));
 		numConnections++;
+		printf("Server::numConnections %d out of numNodes %d done at time %lu\n", numConnections, numNodes-1, std::time(0));
 
 		this->socketMap[nodeNum] = acceptedSocket;
 		this->sendChannel[nodeNum] = std::queue<char*>();

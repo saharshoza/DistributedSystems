@@ -46,6 +46,25 @@ void CommInterface::ClientThreadVector(int numNodes, int myVal, std::vector<int>
     while(1){};
 }
 
+void CommInterface::CreateLogger(const char* testBin){
+    char loggerFileName[256];
+    memset(loggerFileName, '\0', sizeof(loggerFileName));
+    char myValStr[2];
+    sprintf(myValStr, "%d", myVal);
+    char *dirPath(getenv("DistributedSystems"));
+    strcat(loggerFileName, dirPath);
+    strcat(loggerFileName, "demo");
+    strcat(loggerFileName, "/");
+    strcat(loggerFileName, testBin);
+    strcat(loggerFileName, "/");
+    strcat(loggerFileName, "log");
+    // strcat(loggerFileName, "/home/saharsh/UTAustin/December/DS/logcomm");
+    strcat(loggerFileName, myValStr);
+    strcat(loggerFileName, ".out");
+    strcpy(this->logName, loggerFileName);    
+    this->loggerFile.open(loggerFileName, std::fstream::in | std::fstream::out | std::fstream::app); 
+}
+
 CommInterface::CommInterface(int numNodes, int myVal){
 
     this->numNodes = numNodes;
@@ -66,16 +85,6 @@ CommInterface::CommInterface(int numNodes, int myVal){
     t2.detach();
 
     while(serverFuture.get() != 1 || clientFuture.get() != 1){};
-
-    char loggerFileName[256];
-    memset(loggerFileName, '\0', sizeof(loggerFileName));
-    char myValStr[2];
-    sprintf(myValStr, "%d", myVal);
-    strcat(loggerFileName, "/home/saharsh/UTAustin/December/DS/logcomm");
-    strcat(loggerFileName, myValStr);
-    strcat(loggerFileName, ".out");
-    this->loggerFile.open(loggerFileName, std::fstream::in | std::fstream::out | std::fstream::app);
-    //loggerFile.open(loggerFileName, std::fstream::in | std::fstream::out | std::fstream::app);
 
     printf("Process %d::CommInterface::Connection Established\n", (int) getpid());
 }
@@ -100,16 +109,6 @@ CommInterface::CommInterface(int numNodes, int myVal, std::vector<int> neighbors
 
     while(serverFuture.get() != 1 || clientFuture.get() != 1){};
 
-    char loggerFileName[256];
-    memset(loggerFileName, '\0', sizeof(loggerFileName));
-    char myValStr[2];
-    sprintf(myValStr, "%d", myVal);
-    strcat(loggerFileName, "/home/saharsh/UTAustin/December/DS/logcomm");
-    strcat(loggerFileName, myValStr);
-    strcat(loggerFileName, ".out");
-    this->loggerFile.open(loggerFileName, std::fstream::in | std::fstream::out | std::fstream::app);
-    //loggerFile.open(loggerFileName, std::fstream::in | std::fstream::out | std::fstream::app);
-
     printf("Process %d::CommInterface::Connection Established\n", (int) getpid());
 }
 
@@ -117,10 +116,6 @@ void CommInterface::SendData(char* data, int nodeNum){
     char dataCopy[32];
     strcpy(dataCopy, data);
     this->s->sendChannel[nodeNum].push(dataCopy);
-    // srand(std::time(0));
-    // int sleep_time = (rand()%1000) * 10000;
-    // this->delayMap[nodeNum].push(sleep_time);
-    // usleep(sleep_time);
     this->s->SendData(nodeNum);
 }
 
@@ -151,12 +146,6 @@ char* CommInterface::ReceiveData(int nodeNum){
     this->c->recvChannel[nodeNum].pop();
     return buffer;
 }
-
-// void CommInterface::BroadcastData(char* data){
-//     for(int node_iter = 0; node_iter < this->numNodes; node_iter++){
-//         this->SendData(data, node_iter);
-//     }
-// }
 
 void CommInterface::BroadcastData(char* data){
     for(auto &node_iter: this->neighbors){
