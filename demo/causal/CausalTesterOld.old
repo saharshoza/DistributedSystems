@@ -21,9 +21,8 @@
 
 #define PATHSIZE 128
 
-#define SENDER      0
-#define HOP         1
-#define RECEIVER    2
+#define SENDER 0
+#define RECEIVER 4
 
 int main(int argc, char const *argv[])
 {
@@ -70,26 +69,34 @@ int main(int argc, char const *argv[])
     if(myVal == SENDER){
         char m1[16] = "M1";
         char m2[16] = "M2";
-        causal.SendCausal(m1, RECEIVER, 500000);
-        //causal.SendCausal(m2, HOP);
-        while(1){}
+        char m3[16] = "M3";
+        causal.SendCausal(m1, 1);
+        causal.SendCausal(m2, 2);
+        causal.SendCausal(m3, 3);
     }
 
     // First message is delayed and next to reach instantly
     if(myVal != SENDER && myVal != RECEIVER){
         while(1){
             std::vector<char*> messageBodies = causal.GetDelivered();
-            // if(myVal == 1)
-            //     usleep(500000);
+            if(myVal == 1)
+                usleep(500000);
             for(auto &v: messageBodies){
                 if(myVal == 1 && !strcmp(v, "M1")){
-                    causal.SendCausal(v, RECEIVER);
-                    break;                    
-                }                 
+                    break;
+                    causal.SendCausal(v, RECEIVER);                    
+                }
+                if(myVal == 2 && !strcmp(v, "M2")){
+                    break;
+                    causal.SendCausal(v, RECEIVER);                    
+                }
+                if(myVal == 3 && !strcmp(v, "M3")){
+                    break;
+                    causal.SendCausal(v, RECEIVER);                    
+                }
             }
         }
     }
-    
 
     // Wait for messages to be delivered at the receiver
     if(myVal == RECEIVER){

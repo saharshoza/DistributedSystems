@@ -2,7 +2,7 @@
 EXE := causal
 
 # Source files
-SRC := $(wildcard *.cpp)
+SRC := $(wildcard *.c*)
 
 # Object files
 OBJ := $(SRC:.cpp=.o)
@@ -19,7 +19,7 @@ CPPFLAGS += -MMD -MP
 CXXFLAGS := -std=c++11
 
 # pthread library
-LDLIBS := -lpthread
+LDLIBS := -lpthread -lprotobuf
 
 # Tell make that these target are not real files
 .PHONY: all clean

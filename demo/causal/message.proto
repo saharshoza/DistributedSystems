@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package message;
+
+option optimize_for = LITE_RUNTIME;
+
+message CausalMessage {
+
+  string messageBody = 1;
+
+  message Matrix {
+    message Vector{
+      repeated int32 event = 1;
+    }
+    repeated Vector vectors = 1;
+  }
+
+  Matrix matrix = 2;
+
+  int32 srcID = 3;
+
+  int32 destID = 4;
+}
